@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h3>Legajo</h3>
+        <p id="legajo"></p>
+        <h3>Nombre</h3>
+        <p id="nombre"></p>
+        <h3>Apellido</h3>
+        <p id="apellido"></p>
+        <h3>Correo</h3>
+        <p id="correo"></p>
+        <h3>Curso</h3>
+        <p id="curso"></p>
+        <h3>Especialidad</h3>
+        <p id="especialidad"></p>
+        <h3>Turno</h3>
+        <p id="turno"></p>
+        <h3>Faltas</h3>
+        <p id="faltas"></p>
+    </div>
+
+    <div>
+        <h3>Profesores</h3>
+        <table>
+            <tr>
+                <th>Materia</th>
+                <th>Profesor</th>
+            </tr>
+            <tbody id="info">
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchAlumno(){
+            const response = await fetch('http://localhost:1234/getAlumnos');
+            const alumnos = await response.json();
+            console.log(alumnos);
+            // Suponiendo que solo hay un alumno, si hay más deberías modificarlo
+            if (alumnos.length > 0) {
+                const alumno = alumnos[0]; // Obtener solo el primer alumno
+                document.getElementById('legajo').innerText = alumno.legajo;
+                document.getElementById('nombre').innerText = alumno.nombre;
+                document.getElementById('apellido').innerText = alumno.apellido;
+                document.getElementById('correo').innerText = alumno.correo;
+                document.getElementById('curso').innerText = alumno.curso;
+                document.getElementById('especialidad').innerText = alumno.especialidad;
+                document.getElementById('turno').innerText = alumno.turno;
+                document.getElementById('faltas').innerText = alumno.inasistencias;
+            }
+        }
+        fetchAlumno();
+
+        async function fetchProfesores(){
+            const response = await fetch('http://localhost:1234/getProfesores');
+            const profesores = await response.json();
+            console.log(profesores);
+
+            profesores.forEach(profesor => {
+                // Crear una nueva fila para la tabla
+                const fila = document.createElement('tr');
+
+                // Crear una celda para la materia
+                const celdaMateria = document.createElement('td');
+                celdaMateria.innerText = profesor.materia;
+
+                // Crear una celda para el profesor
+                const celdaProfesor = document.createElement('td');
+                celdaProfesor.innerText = `${profesor.nombre} ${profesor.apellido}` ; // Suponiendo que el objeto profesor tiene una propiedad nombre
+
+                // Adjuntar las celdas a la fila
+                fila.appendChild(celdaMateria);
+                fila.appendChild(celdaProfesor);
+
+                // Adjuntar la fila a la tabla
+                document.getElementById('info').appendChild(fila);
+            });
+        }
+        fetchProfesores();
+    </script>
+</body>
+</html>
